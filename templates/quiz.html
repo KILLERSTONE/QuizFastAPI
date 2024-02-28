@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      #quiz-form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 10px;
+      }
+
+      .question {
+        margin-bottom: 20px;
+      }
+
+      .question p {
+        font-weight: bold;
+      }
+
+      button[type="submit"] {
+        display: block;
+        margin: 0 auto;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      #result {
+        margin-top: 20px;
+        text-align: center;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Java Exception Handling Quiz</h1>
+    <form id="quiz-form">
+      {% for question_index in range(ques|length) %}
+      <div class="question">
+        <p>{{ ques[question_index] }}</p>
+        {% for option in options[question_index] %}
+        <input
+          type="radio"
+          name="q{{ question_index }}"
+          value="{{ loop.index }}"
+          required
+        />
+        <label>{{ option }}</label><br />
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <button type="submit">Submit Quiz</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#quiz-form").submit(function (event) {
+          event.preventDefault();
+          $.ajax({
+            type: "POST",
+            url: "/submit-quiz",
+            data: $(this).serialize(),
+            success: function (response) {
+              $("#result").text(response.message);
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
